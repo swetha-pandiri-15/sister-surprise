@@ -66,10 +66,11 @@
     h1,h2,h3{ margin:0 0 10px 0; line-height:1.2; }
 
     .title{
-      font-size:30px;
+      font-size: clamp(20px, 6vw, 30px);
       font-weight:800;
       text-align:center;
       color: var(--ink);
+      white-space: nowrap;
     }
     .title .gold{
       background: linear-gradient(180deg, var(--gold2), var(--gold));
@@ -137,12 +138,11 @@
     }
 
     /* Envelope */
-    .env-wrap{
+.env-wrap{
   display:flex;
   justify-content:center;
-  margin:14px 0 6px;
   position:relative;
-  padding-top:120px;   /* reserves space for the overlay button */
+  margin-top:24px;
 }
     .envelope{
       width:340px;
@@ -209,12 +209,13 @@
     }
 
     /* Button overlay on top of envelope */
-   .env-btn-overlay{
+  .env-btn-overlay{
   position:absolute;
-  top:38px;           /* sits inside reserved space */
+  top:-22px; /* sits slightly above flap */
   left:50%;
   transform: translateX(-50%);
-  width:min(320px, 92%);
+  width:80%;
+  max-width:280px;
   z-index:10;
 }
 
@@ -827,6 +828,7 @@
   </script>
 </body>
 </html>
+
 
 
 
