@@ -11,17 +11,17 @@
   <style>
     :root{
       /* Elegant cream + gold */
-      --bg1:#fbf6ea;      /* cream */
-      --bg2:#f3e7c6;      /* warm cream */
+      --bg1:#fbf6ea;
+      --bg2:#f3e7c6;
       --card:#ffffff;
       --text:#1f1a12;
       --muted:#5b5146;
 
-      --gold:#c6a25a;     /* champagne gold */
-      --gold2:#b8903f;    /* richer gold */
+      --gold:#c6a25a;
+      --gold2:#b8903f;
       --ink:#1f1a12;
 
-      --wine:#6b1f3a;     /* emotional message color */
+      --wine:#6b1f3a;
       --shadow: 0 18px 45px rgba(31, 26, 18, .16);
       --softShadow: 0 10px 28px rgba(31, 26, 18, .12);
     }
@@ -57,7 +57,6 @@
       border:1px solid rgba(198,162,90,.22);
     }
 
-    /* Elegant headline font for titles */
     .serif{
       font-family: ui-serif, "Georgia", "Times New Roman", serif;
       letter-spacing:.2px;
@@ -83,8 +82,8 @@
       text-align:center;
       margin-top:10px;
       font-size:16px;
-      font-weight:900; /* bold */
-      color:#000;      /* black */
+      font-weight:900;
+      color:#000;
     }
 
     .sub{
@@ -138,12 +137,12 @@
     }
 
     /* Envelope */
-.env-wrap{
-  display:flex;
-  justify-content:center;
-  position:relative;
-  margin-top:24px;
-}
+    .env-wrap{
+      display:flex;
+      justify-content:center;
+      margin-top:24px;
+      position:relative;
+    }
     .envelope{
       width:340px;
       max-width:100%;
@@ -188,7 +187,7 @@
       transform: rotateX(160deg);
     }
 
-    /* Paper slides out (no “Tap…” text; purely visual) */
+    /* Paper slides out (visual only) */
     .paper{
       position:absolute;
       left:50%;
@@ -208,21 +207,6 @@
       transform: translateX(-50%) translateY(-62px);
     }
 
-    /* Button overlay on top of envelope */
-  .env-btn-overlay{
-  position:absolute;
-  top:-22px; /* sits slightly above flap */
-  left:50%;
-  transform: translateX(-50%);
-  width:80%;
-  max-width:280px;
-  z-index:10;
-}
-
-.env-wrap{
-  margin-top:22px;          /* creates breathing room above envelope block */
-  padding-top:34px;         /* reserves space for the overlay button */
-}
     /* Quiz paper card */
     .paper-card{
       position:relative;
@@ -243,12 +227,14 @@
       color:var(--ink);
       text-align:center;
       margin-bottom:12px;
+      white-space: pre-line; /* allow line breaks in title text */
     }
     .q{
       font-weight:900;
       margin:10px 0 10px;
       font-size:16px;
       text-align:left;
+      white-space: pre-line; /* allow line breaks in question text */
     }
 
     .choices{ display:flex; flex-direction:column; gap:10px; margin-top:10px; }
@@ -301,7 +287,7 @@
       80%{ transform: translateX(6px); }
     }
 
-    /* Image reveal: blur -> clear, blocks feel via overlay */
+    /* Image reveal: blur -> clear */
     .answer-media{
       margin-top:14px;
       display:flex;
@@ -331,27 +317,8 @@
       transform: scale(1);
       opacity:1;
     }
-    .img-overlay{
-      position:absolute;
-      inset:0;
-      background:
-        repeating-linear-gradient(
-          90deg,
-          rgba(255,255,255,.28) 0px,
-          rgba(255,255,255,.28) 18px,
-          rgba(255,255,255,.06) 18px,
-          rgba(255,255,255,.06) 36px
-        );
-      opacity:0;
-      transition: opacity .55s ease;
-      pointer-events:none;
-    }
-    .img-wrap.reveal .img-overlay{
-      opacity:0; /* ensure it fades away */
-    }
 
     .next-row{ margin-top:14px; }
-    .next-row .btn{ width:100%; }
 
     /* Reveal page image animation */
     .reveal-img{
@@ -409,14 +376,13 @@
 </head>
 
 <body>
-  <!-- Floating hearts + poppers -->
   <div class="float-layer" id="floatLayer"></div>
 
   <div class="wrap">
 
     <!-- START PAGE -->
     <div class="card" id="pageStart">
-      <h1 class="title serif">🎉<span class="gold">Happy Birthday Baby Doll!</span>🎉</h1>
+      <h1 class="title serif">🎉 <span class="gold">Happy Birthday Baby Doll!</span> 🎉</h1>
       <div class="mail">You’ve got mail…</div>
       <div class="sub">Click below to open your special surprise 🥳</div>
 
@@ -427,20 +393,18 @@
           <div class="env-front"></div>
           <div class="env-flap"></div>
         </div>
+      </div>
 
-        <!-- Button ON TOP of envelope -->
-        <div class="env-btn-overlay">
-          <button class="btn" id="btnOpen">Open Envelope</button>
-        </div>
+      <div style="margin-top:20px;">
+        <button class="btn" id="btnOpen">Open Envelope</button>
       </div>
     </div>
 
     <!-- QUIZ PAGE -->
     <div class="card hidden" id="pageQuiz">
       <div class="paper-card" id="paperCard">
-        <div class="quiz-title" id="quizTitle">
-          Not so quick! 😆<br/>Answer these to Unlock Your Gift 🎁
-        </div>
+        <div class="quiz-title" id="quizTitle">Not so quick! 😆
+Answer these to Unlock Your Gift 🎁</div>
 
         <div class="q" id="qText"></div>
         <div class="choices" id="choices"></div>
@@ -450,7 +414,6 @@
         <div class="answer-media hidden" id="answerMedia">
           <div class="img-wrap hidden" id="imgWrap">
             <img id="answerImg" alt="memory image" />
-            <div class="img-overlay"></div>
           </div>
           <div class="feedback good" id="rightQuote"></div>
         </div>
@@ -464,24 +427,23 @@
     <!-- FINAL GATE -->
     <div class="card hidden" id="pageGate">
       <h2 class="title serif" style="font-size:26px;">
-        <span class="gold">Yayy!! 😄</span>
+        <span class="gold">Yayy!! 🎉</span>
       </h2>
       <div class="sub" style="font-size:16px; color:#2a241b; font-weight:900;">
         Finally!!! You made it!!!! Click here to reveal your gift
       </div>
 
-      <div class="env-wrap" style="margin-top:12px;">
+      <div class="env-wrap" style="margin-top:16px;">
         <div class="envelope" id="env2">
           <div class="env-body"></div>
           <div class="paper" aria-hidden="true"></div>
           <div class="env-front"></div>
           <div class="env-flap"></div>
         </div>
+      </div>
 
-        <!-- Reveal button ON TOP of envelope -->
-        <div class="env-btn-overlay">
-          <button class="btn" id="btnReveal">Reveal Gift</button>
-        </div>
+      <div style="margin-top:20px;">
+        <button class="btn" id="btnReveal">Reveal Gift</button>
       </div>
     </div>
 
@@ -494,15 +456,15 @@
       <img class="reveal-img" id="silverImg" alt="Silver Gift" src="images/silver.jpg"/>
 
       <div class="final-quip">
-        See? 🤷‍♀️ I listen when you talk about long-term value. This one doesn't need a manual and no software updates required 😆
+        See? 🙌 I listen when you talk about long-term value. This one doesn't need a manual and no software updates required 😆
       </div>
 
       <div class="emotional">
         <div class="msg">
-          Just like this, you’re steady, strong, and quietly valuable - more than you even realize.
+          Just like this, you’re steady, strong, and quietly valuable — more than you even realize.
         </div>
         <div class="sig">
-          Love you soo much Baby Doll 😘!! Happppy Birthday!!!!! 💛
+          Love you soo much Baby Doll!! Happppy Birthday!!!!! 💛😘
         </div>
       </div>
     </div>
@@ -513,9 +475,6 @@
   <audio id="sfxOpen" src="assets/envelope_open.mp3" preload="auto"></audio>
 
   <script>
-    /***********************
-     * QUIZ DATA (final)
-     ***********************/
     const questions = [
       {
         text: "1️⃣ What was the color of your dress on your 3rd birthday?",
@@ -534,8 +493,8 @@
         image: "images/q2.jpg"
       },
       {
-        text: "3️⃣ Which subject were you secretly terrified of just passing in BTech?",
-        choices: ["Advanced Control Systems", "Microprocessors & Microcontrollers", "None – I was fearless"],
+        text: "3️⃣ Which subject were you so terrified of failing in BTech ?",
+        choices: ["Advanced Controlling Systems", "Microprocessors & Microcontrollers", "None – I was fearless"],
         correctIndex: 0,
         rightQuote: "Those fearful days, for the entire family 😨",
         wrongQuote: "Wow Sravani! You don’t even remember!",
@@ -562,7 +521,7 @@
         choices: ["Your sister", "Google", "ChatGPT"],
         correctIndex: 0,
         rightQuote: "Well!! Of course. 😌",
-        wrongQuote: "Oh wow!! Good to know your real answer 😆 Try again!",
+        wrongQuote: "Oh wow!! Good to know your real answer 😢 Oh wow!! Good to know your real answer, but think again!",
         image: "images/q6.jpg"
       },
       {
@@ -575,9 +534,6 @@
       }
     ];
 
-    /***********************
-     * Elements
-     ***********************/
     const $ = (id) => document.getElementById(id);
 
     const pageStart = $("pageStart");
@@ -608,14 +564,8 @@
     let confettiTimer = null;
     let floatTimer = null;
 
-    /***********************
-     * Confetti (continuous)
-     ***********************/
     function startContinuousConfetti(){
       if (confettiTimer) return;
-
-      // gold-ish vibe; we can’t set colors per your request? (You didn’t forbid it.)
-      // We'll keep default colors to avoid any weirdness.
       confettiTimer = setInterval(() => {
         confetti({
           particleCount: 12,
@@ -635,9 +585,6 @@
       });
     }
 
-    /***********************
-     * Floating hearts + poppers
-     ***********************/
     function startFloatingStuff(){
       const layer = $("floatLayer");
       const items = ["💛","🤍","✨","🎉","🎊","🥳","💖"];
@@ -657,15 +604,13 @@
       }, 420);
     }
 
-    /***********************
-     * Audio
-     ***********************/
     async function startMusic(){
       try {
         bgMusic.volume = 0.55;
         await bgMusic.play();
       } catch {}
     }
+
     function playOpenSfx(){
       try {
         sfxOpen.currentTime = 0;
@@ -674,18 +619,13 @@
       } catch {}
     }
 
-    /***********************
-     * Quiz engine
-     ***********************/
     function setQuizTitle(){
-      // After 3 questions (i.e., starting Q4), change to "Almost there..."
       if (idx >= 3 && idx < 6){
-        quizTitle.innerHTML = "Almost there… ✨";
+        quizTitle.textContent = "Almost there… ✨";
       } else if (idx < 3){
-        quizTitle.innerHTML = "Not so quick! 😆<br/>Answer these to Unlock Your Gift 🎁";
+        quizTitle.textContent = "Not so quick! 😆\nAnswer these to Unlock Your Gift 🎁";
       } else if (idx === 6){
-        // Q7 already has "Last one..." in the question text; keep title minimal
-        quizTitle.innerHTML = "Almost done… 💛";
+        quizTitle.textContent = "Almost done… 💛";
       }
     }
 
@@ -728,33 +668,26 @@
       const q = questions[idx];
 
       if (choiceIndex !== q.correctIndex){
-        // Wrong: shake + clear image + clear next
         shakePaper();
         clearCorrectUI();
-
         feedbackEl.textContent = q.wrongQuote;
         feedbackEl.className = "feedback bad";
         return;
       }
 
-      // Correct
       feedbackEl.textContent = "";
       feedbackEl.className = "feedback";
-
       miniConfetti();
 
       rightQuoteEl.textContent = q.rightQuote;
       answerMedia.classList.remove("hidden");
-  
-            if (q.image){
+
+      if (q.image){
         imgWrap.classList.remove("hidden");
-      
-        // reset reveal state
         imgWrap.classList.remove("reveal");
         answerImg.onload = null;
         answerImg.onerror = null;
-      
-        // set handlers BEFORE src (fixes cached image issue)
+
         answerImg.onload = () => {
           requestAnimationFrame(() => imgWrap.classList.add("reveal"));
         };
@@ -762,11 +695,9 @@
           imgWrap.classList.add("hidden");
           rightQuoteEl.textContent = q.rightQuote + " (Image failed to load)";
         };
-      
-        // now set src
+
         answerImg.src = q.image;
-      
-        // if the image is already cached, force reveal
+
         if (answerImg.complete) {
           requestAnimationFrame(() => imgWrap.classList.add("reveal"));
         }
@@ -774,9 +705,7 @@
         imgWrap.classList.add("hidden");
       }
 
-
       nextRow.classList.remove("hidden");
-      feedbackEl.textContent = "";
     }
 
     btnNext.addEventListener("click", () => {
@@ -790,9 +719,6 @@
       }
     });
 
-    /***********************
-     * Actions
-     ***********************/
     $("btnOpen").addEventListener("click", async () => {
       startFloatingStuff();
       startContinuousConfetti();
@@ -818,17 +744,11 @@
       setTimeout(() => {
         pageGate.classList.add("hidden");
         pageReveal.classList.remove("hidden");
-
         confetti({ particleCount: 200, spread: 120, startVelocity: 36, origin: { y: 0.65 } });
       }, 850);
     });
 
-    // Start background float immediately (visual only)
     startFloatingStuff();
   </script>
 </body>
 </html>
-
-
-
-
