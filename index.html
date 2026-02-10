@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>A Special Surprise</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #f9e6ff, #ffe6f2);
+  text-align: center;
+  margin: 0;
+  padding: 20px;
+}
+
+.card {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+  max-width: 400px;
+  margin: 40px auto;
+  transition: 0.4s ease;
+}
+
+button {
+  padding: 12px 20px;
+  border: none;
+  background: #ff4da6;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #ff3399;
+}
+
+input {
+  padding: 10px;
+  width: 80%;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.hidden {
+  display: none;
+}
+
+img {
+  max-width: 100%;
+  border-radius: 15px;
+  margin-top: 20px;
+}
+
+h2 {
+  margin-top: 0;
+}
+</style>
+</head>
+
+<body>
+
+<div id="envelope" class="card">
+  <h2>💌 You've Got Mail</h2>
+  <p>Click below to open your special envelope...</p>
+  <button onclick="openEnvelope()">Open Envelope</button>
+</div>
+
+<div id="quiz" class="card hidden">
+  <h2>Answer These to Unlock Your Gift 😌</h2>
+
+  <p>1. Who is the best sister ever?</p>
+  <input type="text" id="q1"><br><br>
+
+  <p>2. What color is the sky?</p>
+  <input type="text" id="q2"><br><br>
+
+  <button onclick="checkAnswers()">Unlock My Gift</button>
+  <p id="error" style="color:red;"></p>
+</div>
+
+<div id="reveal" class="card hidden">
+  <h2>🎉 You Unlocked It!</h2>
+  <p>Here’s your surprise 💛</p>
+  <img id="giftImage" src="" alt="Surprise Gift">
+</div>
+
+<script>
+function openEnvelope() {
+  document.getElementById("envelope").classList.add("hidden");
+  document.getElementById("quiz").classList.remove("hidden");
+}
+
+function checkAnswers() {
+  const answer1 = document.getElementById("q1").value.toLowerCase();
+  const answer2 = document.getElementById("q2").value.toLowerCase();
+
+  if ((answer1.includes("me") || answer1.includes("you")) && answer2.includes("blue")) {
+    document.getElementById("quiz").classList.add("hidden");
+    document.getElementById("reveal").classList.remove("hidden");
+
+    // Load random image each time
+    document.getElementById("giftImage").src =
+      "https://picsum.photos/400/300?random=" + new Date().getTime();
+
+  } else {
+    document.getElementById("error").innerText =
+      "Hmm... not quite right 😏 Try again!";
+  }
+}
+</script>
+
+</body>
+</html>
