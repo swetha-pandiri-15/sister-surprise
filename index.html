@@ -138,11 +138,12 @@
 
     /* Envelope */
     .env-wrap{
-      display:flex;
-      justify-content:center;
-      margin:14px 0 6px;
-      position:relative;
-    }
+  display:flex;
+  justify-content:center;
+  margin:14px 0 6px;
+  position:relative;
+  padding-top:54px;   /* reserves space for the overlay button */
+}
     .envelope{
       width:340px;
       max-width:100%;
@@ -208,15 +209,19 @@
     }
 
     /* Button overlay on top of envelope */
-    .env-btn-overlay{
-      position:absolute;
-      top:-18px;
-      left:50%;
-      transform: translateX(-50%);
-      width:min(320px, 92%);
-      z-index:10;
-    }
+   .env-btn-overlay{
+  position:absolute;
+  top:10px;           /* sits inside reserved space */
+  left:50%;
+  transform: translateX(-50%);
+  width:min(320px, 92%);
+  z-index:10;
+}
 
+.env-wrap{
+  margin-top:22px;          /* creates breathing room above envelope block */
+  padding-top:34px;         /* reserves space for the overlay button */
+}
     /* Quiz paper card */
     .paper-card{
       position:relative;
@@ -739,24 +744,35 @@
 
       rightQuoteEl.textContent = q.rightQuote;
       answerMedia.classList.remove("hidden");
-
-      if (q.image){
+  
+            if (q.image){
         imgWrap.classList.remove("hidden");
-        // Reset then reveal
+      
+        // reset reveal state
         imgWrap.classList.remove("reveal");
-        answerImg.style.opacity = "0";
-        answerImg.src = q.image;
-
-        // Let image load then reveal with blur->clear transition
+        answerImg.onload = null;
+        answerImg.onerror = null;
+      
+        // set handlers BEFORE src (fixes cached image issue)
         answerImg.onload = () => {
-          // show quickly then animate reveal
-          requestAnimationFrame(() => {
-            imgWrap.classList.add("reveal");
-          });
+          requestAnimationFrame(() => imgWrap.classList.add("reveal"));
         };
+        answerImg.onerror = () => {
+          imgWrap.classList.add("hidden");
+          rightQuoteEl.textContent = q.rightQuote + " (Image failed to load)";
+        };
+      
+        // now set src
+        answerImg.src = q.image;
+      
+        // if the image is already cached, force reveal
+        if (answerImg.complete) {
+          requestAnimationFrame(() => imgWrap.classList.add("reveal"));
+        }
       } else {
         imgWrap.classList.add("hidden");
       }
+
 
       nextRow.classList.remove("hidden");
       feedbackEl.textContent = "";
@@ -811,3 +827,4 @@
   </script>
 </body>
 </html>
+
