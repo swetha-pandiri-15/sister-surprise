@@ -1,152 +1,691 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Birthday Surprise</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Birthday Surprise</title>
 
-<!-- Confetti Library -->
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-<style>
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #ffdde1, #ee9ca7);
-  text-align: center;
-  margin: 0;
-  padding: 20px;
-  overflow-x: hidden;
-}
+  <style>
+    :root{
+      --pink:#ff4da6;
+      --pink2:#ff2f92;
+      --bg1:#ffdde1;
+      --bg2:#ee9ca7;
+      --card:#ffffff;
+      --text:#222;
+      --muted:#666;
+      --shadow: 0 18px 40px rgba(0,0,0,.18);
+    }
 
-.card {
-  background: white;
-  padding: 30px;
-  border-radius: 20px;
-  box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-  max-width: 420px;
-  margin: 40px auto;
-  animation: fadeIn 1s ease-in-out;
-}
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+      color:var(--text);
+      background: radial-gradient(1200px 600px at 20% 10%, #fff7fb, transparent 60%),
+                  linear-gradient(135deg, var(--bg1), var(--bg2));
+      overflow-x:hidden;
+      min-height:100vh;
+    }
 
-h1 {
-  font-size: 28px;
-  color: #ff1493;
-  margin-top: 0;
-}
+    .wrap{
+      padding:16px;
+      max-width:520px;
+      margin:0 auto;
+    }
 
-button {
-  padding: 12px 20px;
-  border: none;
-  background: #ff4da6;
-  color: white;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: 0.3s;
-}
+    .card{
+      background:var(--card);
+      border-radius:22px;
+      box-shadow: var(--shadow);
+      padding:22px 18px;
+      margin:18px auto;
+      position:relative;
+      overflow:hidden;
+    }
 
-button:hover {
-  background: #ff3399;
-}
+    h1,h2,h3{
+      margin:0 0 10px 0;
+      line-height:1.2;
+    }
 
-input {
-  padding: 10px;
-  width: 80%;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-}
+    .title{
+      font-size:28px;
+      color:var(--pink2);
+      font-weight:800;
+      letter-spacing:.2px;
+      text-align:center;
+    }
 
-.hidden {
-  display: none;
-}
+    .sub{
+      text-align:center;
+      color:var(--muted);
+      margin:6px 0 14px 0;
+      font-size:15px;
+    }
 
-img {
-  max-width: 100%;
-  border-radius: 15px;
-  margin-top: 20px;
-}
+    .btn{
+      appearance:none;
+      border:none;
+      background:var(--pink);
+      color:#fff;
+      font-weight:700;
+      padding:12px 16px;
+      border-radius:14px;
+      cursor:pointer;
+      font-size:16px;
+      width:100%;
+      transition: transform .08s ease, background .2s ease;
+      box-shadow: 0 10px 22px rgba(255, 77, 166, .28);
+    }
+    .btn:active{ transform: scale(.98); }
+    .btn:hover{ background:var(--pink2); }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-</style>
+    .hidden{ display:none !important; }
+
+    /* Floating hearts + poppers */
+    .float-layer{
+      pointer-events:none;
+      position:fixed;
+      inset:0;
+      overflow:hidden;
+      z-index:0;
+    }
+    .float{
+      position:absolute;
+      bottom:-40px;
+      font-size:22px;
+      opacity:.9;
+      animation: rise linear forwards;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.12));
+    }
+    @keyframes rise{
+      to{
+        transform: translateY(-110vh) translateX(var(--dx));
+        opacity:0;
+      }
+    }
+
+    /* Envelope (real-ish look) */
+    .envelope-area{ position:relative; z-index:1; }
+    .env-wrap{
+      display:flex;
+      justify-content:center;
+      margin:10px 0 6px;
+    }
+    .envelope{
+      width:320px;
+      max-width:100%;
+      height:210px;
+      position:relative;
+      border-radius:18px;
+      background: linear-gradient(180deg, #fff, #fff5fb);
+      box-shadow: 0 18px 35px rgba(0,0,0,.18);
+      overflow:hidden;
+    }
+    .env-body{
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(135deg, rgba(255,77,166,.15), transparent 40%),
+        linear-gradient(225deg, rgba(255,77,166,.10), transparent 45%),
+        #fff;
+    }
+    .env-front{
+      position:absolute;
+      left:0; right:0; bottom:0;
+      height:60%;
+      background: linear-gradient(180deg, #fff, #fff1f9);
+      border-top: 1px solid rgba(0,0,0,.06);
+      clip-path: polygon(0 0, 50% 55%, 100% 0, 100% 100%, 0 100%);
+      z-index:3;
+    }
+    .env-flap{
+      position:absolute;
+      left:0; right:0; top:0;
+      height:62%;
+      background: linear-gradient(180deg, #fff, #ffe7f3);
+      transform-origin: top center;
+      transform: rotateX(0deg);
+      clip-path: polygon(0 0, 50% 75%, 100% 0, 100% 100%, 0 100%);
+      border-bottom: 1px solid rgba(0,0,0,.06);
+      z-index:4;
+      transition: transform .65s cubic-bezier(.2,.8,.2,1);
+    }
+    .envelope.open .env-flap{
+      transform: rotateX(160deg);
+    }
+
+    /* Paper that slides out */
+    .paper{
+      position:absolute;
+      left:50%;
+      transform: translateX(-50%);
+      bottom:18px;
+      width:86%;
+      height:150px;
+      background: #fff;
+      border-radius:16px;
+      border:1px solid rgba(0,0,0,.08);
+      box-shadow: 0 12px 22px rgba(0,0,0,.12);
+      z-index:2;
+      transition: transform .9s cubic-bezier(.15,.9,.2,1), bottom .9s cubic-bezier(.15,.9,.2,1);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:14px;
+      text-align:center;
+      color:#333;
+      font-weight:700;
+    }
+    .envelope.open .paper{
+      bottom:74px;
+      transform: translateX(-50%) translateY(-62px);
+    }
+
+    /* Quiz paper/card styling */
+    .paper-card{
+      position:relative;
+      z-index:1;
+      padding:18px 16px 16px;
+      border-radius:20px;
+      background:
+        radial-gradient(500px 200px at 20% 20%, rgba(255,77,166,.10), transparent 60%),
+        linear-gradient(180deg, #ffffff, #fff5fb);
+      border: 1px solid rgba(0,0,0,.06);
+      box-shadow: 0 14px 28px rgba(0,0,0,.12);
+      overflow:hidden;
+    }
+
+    .quiz-title{
+      font-size:18px;
+      font-weight:800;
+      color:#222;
+      text-align:center;
+      margin-bottom:12px;
+    }
+    .q{
+      font-weight:800;
+      margin:10px 0 10px;
+      font-size:16px;
+      text-align:left;
+    }
+
+    .choices{ display:flex; flex-direction:column; gap:10px; margin-top:10px; }
+    .choice{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(0,0,0,.10);
+      background:#fff;
+      cursor:pointer;
+      transition: transform .08s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+    .choice:hover{
+      border-color: rgba(255,77,166,.45);
+      box-shadow: 0 10px 18px rgba(255,77,166,.12);
+    }
+    .choice:active{ transform: scale(.99); }
+    .badge{
+      width:30px;
+      height:30px;
+      border-radius:10px;
+      background: rgba(255,77,166,.12);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      color: var(--pink2);
+      flex:0 0 auto;
+    }
+    .choice span{ text-align:left; }
+
+    .feedback{
+      margin-top:12px;
+      font-weight:800;
+      text-align:center;
+      min-height:22px;
+    }
+    .feedback.good{ color:#0b7a2c; }
+    .feedback.bad{ color:#c2185b; }
+
+    .shake{
+      animation: shake .32s linear;
+    }
+    @keyframes shake{
+      0%,100%{ transform: translateX(0); }
+      20%{ transform: translateX(-8px); }
+      40%{ transform: translateX(8px); }
+      60%{ transform: translateX(-6px); }
+      80%{ transform: translateX(6px); }
+    }
+
+    .answer-media{
+      margin-top:14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      align-items:center;
+    }
+    .answer-media img{
+      width:100%;
+      border-radius:18px;
+      border:1px solid rgba(0,0,0,.08);
+      box-shadow: 0 14px 28px rgba(0,0,0,.14);
+      transform: scale(.98);
+      opacity:0;
+      animation: popIn .55s ease forwards;
+    }
+    @keyframes popIn{
+      to{ transform: scale(1); opacity:1; }
+    }
+
+    .next-row{ margin-top:14px; }
+
+    /* Final reveal */
+    .reveal-img{
+      width:100%;
+      border-radius:22px;
+      border:1px solid rgba(0,0,0,.10);
+      box-shadow: 0 18px 40px rgba(0,0,0,.20);
+      opacity:0;
+      transform: translateY(10px) scale(.96);
+      animation: revealGlow .95s cubic-bezier(.2,.9,.2,1) forwards;
+    }
+    @keyframes revealGlow{
+      60%{
+        opacity:1;
+        transform: translateY(0) scale(1.02);
+      }
+      100%{
+        opacity:1;
+        transform: translateY(0) scale(1);
+        filter: drop-shadow(0 0 22px rgba(255,77,166,.35));
+      }
+    }
+
+    .final-text{
+      margin-top:14px;
+      font-weight:800;
+      color:#222;
+      text-align:center;
+      line-height:1.4;
+    }
+    .final-text .small{ font-weight:700; color:var(--muted); }
+
+    /* Make sure content sits above floating emojis */
+    .z1{ position:relative; z-index:1; }
+  </style>
 </head>
 
 <body>
+  <!-- Floating hearts + poppers layer -->
+  <div class="float-layer" id="floatLayer"></div>
 
-<!-- Envelope Screen -->
-<div id="envelope" class="card">
-  <h1>🎉 Happy Birthday babyyy doll! 🎉</h1>
-  <p style="margin-top:20px;">💌 You've got mail...</p>
-  <p>Click below to open your special surprise 😌</p>
-  <button onclick="openEnvelope()">Open Envelope</button>
-</div>
+  <div class="wrap z1">
 
-<!-- Quiz -->
-<div id="quiz" class="card hidden">
-  <h2>Answer These to Unlock Your Gift 😌</h2>
+    <!-- ENVELOPE PAGE -->
+    <div class="card" id="pageStart">
+      <h1 class="title">🎉 Happy Birthday Baby Doll! 🎉</h1>
+      <div class="sub">💌 You’ve got mail… click below 😌</div>
 
-  <p>1. Who is the best sister ever?</p>
-  <input type="text" id="q1"><br><br>
+      <div class="envelope-area">
+        <div class="env-wrap">
+          <div class="envelope" id="env1">
+            <div class="env-body"></div>
+            <div class="paper" id="paper1">💌 Tap “Open Envelope”</div>
+            <div class="env-front"></div>
+            <div class="env-flap"></div>
+          </div>
+        </div>
 
-  <p>2. What color is the sky?</p>
-  <input type="text" id="q2"><br><br>
+        <button class="btn" id="btnOpen">Open Envelope</button>
+      </div>
+    </div>
 
-  <button onclick="checkAnswers()">Unlock My Gift</button>
-  <p id="error" style="color:red;"></p>
-</div>
+    <!-- QUIZ PAGE -->
+    <div class="card hidden" id="pageQuiz">
+      <div class="paper-card" id="paperCard">
+        <div class="quiz-title">Not so quick! :d<br/>Answer these to Unlock Your Gift 🎁</div>
 
-<!-- Reveal -->
-<div id="reveal" class="card hidden">
-  <h2>🎁 You Unlocked It!</h2>
-  <p>Here’s your surprise 💛</p>
-  <img id="giftImage" src="" alt="Surprise Gift">
-</div>
+        <div class="q" id="qText"></div>
+        <div class="choices" id="choices"></div>
 
-<script>
+        <div class="feedback" id="feedback"></div>
 
-// 🎉 Confetti Burst on Page Load
-window.onload = function() {
-  confetti({
-    particleCount: 150,
-    spread: 90,
-    origin: { y: 0.6 }
-  });
-};
+        <div class="answer-media hidden" id="answerMedia">
+          <img id="answerImg" alt="memory image" />
+          <div class="feedback good" id="rightQuote"></div>
+        </div>
 
-// Open Envelope
-function openEnvelope() {
-  document.getElementById("envelope").classList.add("hidden");
-  document.getElementById("quiz").classList.remove("hidden");
-}
+        <div class="next-row hidden" id="nextRow">
+          <button class="btn" id="btnNext">Next</button>
+        </div>
+      </div>
+    </div>
 
-// Check Answers
-function checkAnswers() {
-  const answer1 = document.getElementById("q1").value.toLowerCase();
-  const answer2 = document.getElementById("q2").value.toLowerCase();
+    <!-- FINAL GATE (after Q7 correct) -->
+    <div class="card hidden" id="pageGate">
+      <h2 class="title" style="font-size:24px;">Yayy!! 😄</h2>
+      <div class="sub" style="font-size:16px; color:#333; font-weight:800;">
+        Finally!!! You made it!!!! Click here to reveal your gift
+      </div>
 
-  if ((answer1.includes("me") || answer1.includes("you")) && answer2.includes("blue")) {
-    document.getElementById("quiz").classList.add("hidden");
-    document.getElementById("reveal").classList.remove("hidden");
+      <div class="env-wrap" style="margin-top:14px;">
+        <div class="envelope" id="env2">
+          <div class="env-body"></div>
+          <div class="paper" id="paper2">🎁 Ready?</div>
+          <div class="env-front"></div>
+          <div class="env-flap"></div>
+        </div>
+      </div>
 
-    // Random image each time
-    document.getElementById("giftImage").src =
-      "https://picsum.photos/400/300?random=" + new Date().getTime();
+      <button class="btn" id="btnReveal">Reveal Gift</button>
+    </div>
 
-    // Confetti again on win
-    confetti({
-      particleCount: 200,
-      spread: 120,
-      origin: { y: 0.6 }
+    <!-- REVEAL PAGE -->
+    <div class="card hidden" id="pageReveal">
+      <h2 class="title" style="font-size:24px;">🎁 Surprise Unlocked!</h2>
+
+      <img class="reveal-img" id="silverImg" alt="Silver Gift" src="images/silver.jpg"/>
+
+      <div class="final-text">
+        <div class="small">
+          See? I listen when you talk about long-term value. This one doesn't need a manual or no software updates required :d :d
+        </div>
+        <div style="margin-top:10px;">
+          Just like this, you’re steady, strong, and quietly valuable — more than you even realize.
+          <br/>Love you soo much Baby Doll!! Happppy Birthday!!!!! 💖
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <audio id="bgMusic" src="assets/music.mp3" preload="auto" loop></audio>
+  <audio id="sfxOpen" src="assets/envelope_open.mp3" preload="auto"></audio>
+
+  <script>
+    /***********************
+     * CONTENT (edit here)
+     ***********************/
+    const questions = [
+      {
+        text: "1️⃣ What was the color of your dress on your 3rd birthday?",
+        choices: ["Black and red frock", "Plain blue dress", "I don’t remember at all"],
+        correctIndex: 0,
+        rightQuote: "That beautiful girl with a beautiful pose!",
+        wrongQuote: "Uh-oh! Think better!",
+        image: "images/q1.jpg"
+      },
+      {
+        text: "2️⃣ Which subject were you secretly terrified of just passing in BTech?",
+        choices: ["Advanced Control Systems", "Microprocessors & Microcontrollers", "None - I was fearless"],
+        correctIndex: 0,
+        rightQuote: "Those fearful days, for the entire family 😨",
+        wrongQuote: "Wow Sravani! You don't even remember!",
+        image: "images/q2.jpg"
+      },
+      {
+        text: "3️⃣ What’s your favorite “peaceful early morning” ritual?",
+        choices: ["Self-care routine", "Yoga", "Rubbing your eyes as if they will fall out."],
+        correctIndex: 0,
+        rightQuote: "Ah! The world famous routine ever!!",
+        wrongQuote: "You wish! Now, lets talk reality :d :d",
+        image: "images/q3.jpg"
+      },
+      {
+        text: "4️⃣ What was the first Hindi TV serial we obsessively watched together?",
+        choices: ["Iss Pyaar Ko Kya Naam Doon", "Sasural Simar Ka", "Naagin"],
+        correctIndex: 0,
+        rightQuote: "Sasural simar kaaa.... Sasural simar kaa.... 🎶",
+        wrongQuote: "Really Sravani??! You dont remember ?!!",
+        image: "images/q4.jpg"
+      },
+      {
+        text: "5️⃣ In which city did we celebrate your bachelorette party?",
+        choices: ["Nashville", "Afghanistan", "Zimbabwe"],
+        correctIndex: 0,
+        rightQuote: "Yo yoo!!",
+        wrongQuote: "Well, looks like you had a different bachelorette party",
+        image: "images/q5.jpg"
+      },
+      {
+        text: "6️⃣ Who gives better life advice and lessons?",
+        choices: ["Your sister", "Google", "ChatGPT"],
+        correctIndex: 0,
+        rightQuote: "Well!! Ofcourse.",
+        wrongQuote: "Oh wow!! Good to know your real answer, but better luck again!",
+        image: null // no image for q6
+      },
+      {
+        text: "7️⃣ Lastly, According to you, what kind of gift truly stands the test of time?",
+        choices: ["Something meaningful and lasting", "Something trendy and flashy", "Something everyone talks about"],
+        correctIndex: 0,
+        rightQuote: "Agreed! :)",
+        wrongQuote: "Hmm… think like you 😄",
+        image: null
+      }
+    ];
+
+    /***********************
+     * UI helpers
+     ***********************/
+    const $ = (id) => document.getElementById(id);
+
+    const pageStart = $("pageStart");
+    const pageQuiz = $("pageQuiz");
+    const pageGate = $("pageGate");
+    const pageReveal = $("pageReveal");
+
+    const env1 = $("env1");
+    const paperCard = $("paperCard");
+    const qText = $("qText");
+    const choicesEl = $("choices");
+    const feedbackEl = $("feedback");
+
+    const answerMedia = $("answerMedia");
+    const answerImg = $("answerImg");
+    const rightQuoteEl = $("rightQuote");
+    const nextRow = $("nextRow");
+    const btnNext = $("btnNext");
+
+    const env2 = $("env2");
+
+    const bgMusic = $("bgMusic");
+    const sfxOpen = $("sfxOpen");
+
+    let idx = 0;
+    let confettiTimer = null;
+    let floatTimer = null;
+
+    /***********************
+     * Confetti (continuous)
+     ***********************/
+    function startContinuousConfetti(){
+      if (confettiTimer) return;
+      confettiTimer = setInterval(() => {
+        confetti({
+          particleCount: 12,
+          spread: 60,
+          startVelocity: 25,
+          origin: { x: Math.random(), y: 0.85 }
+        });
+      }, 700);
+    }
+
+    function miniConfetti(){
+      confetti({
+        particleCount: 70,
+        spread: 100,
+        startVelocity: 34,
+        origin: { y: 0.65 }
+      });
+    }
+
+    /***********************
+     * Floating hearts/poppers
+     ***********************/
+    function startFloatingStuff(){
+      const layer = $("floatLayer");
+      const items = ["💖","💗","💘","🎉","🎊","🥳","💝"];
+      if (floatTimer) return;
+
+      floatTimer = setInterval(() => {
+        const el = document.createElement("div");
+        el.className = "float";
+        el.textContent = items[Math.floor(Math.random()*items.length)];
+        el.style.left = Math.floor(Math.random()*100) + "vw";
+        el.style.setProperty("--dx", (Math.random()*120 - 60) + "px");
+        el.style.animationDuration = (6 + Math.random()*4) + "s";
+        el.style.opacity = (0.6 + Math.random()*0.4).toFixed(2);
+        el.style.fontSize = (18 + Math.random()*14) + "px";
+
+        layer.appendChild(el);
+
+        setTimeout(() => el.remove(), 11000);
+      }, 450);
+    }
+
+    /***********************
+     * Sound
+     * (mobile browsers require user interaction -> start on Open click)
+     ***********************/
+    async function startMusic(){
+      try {
+        bgMusic.volume = 0.6;
+        await bgMusic.play();
+      } catch {
+        // If blocked, it will start next user interaction automatically.
+      }
+    }
+
+    function playOpenSfx(){
+      try {
+        sfxOpen.currentTime = 0;
+        sfxOpen.volume = 0.9;
+        sfxOpen.play();
+      } catch {}
+    }
+
+    /***********************
+     * Quiz engine
+     ***********************/
+    function renderQuestion(){
+      const q = questions[idx];
+
+      qText.textContent = q.text;
+      choicesEl.innerHTML = "";
+      feedbackEl.textContent = "";
+      feedbackEl.className = "feedback";
+
+      answerMedia.classList.add("hidden");
+      nextRow.classList.add("hidden");
+      rightQuoteEl.textContent = "";
+      answerImg.src = "";
+
+      q.choices.forEach((label, i) => {
+        const row = document.createElement("div");
+        row.className = "choice";
+        row.innerHTML = `<div class="badge">${String.fromCharCode(65 + i)}</div><span>${label}</span>`;
+        row.addEventListener("click", () => handleChoice(i));
+        choicesEl.appendChild(row);
+      });
+    }
+
+    function shakePaper(){
+      paperCard.classList.remove("shake");
+      void paperCard.offsetWidth; // reflow
+      paperCard.classList.add("shake");
+    }
+
+    function handleChoice(choiceIndex){
+      const q = questions[idx];
+
+      if (choiceIndex !== q.correctIndex){
+        feedbackEl.textContent = q.wrongQuote;
+        feedbackEl.classList.add("bad");
+        shakePaper();
+        return;
+      }
+
+      // correct
+      feedbackEl.textContent = "";
+      miniConfetti();
+
+      // show quote + optional image
+      rightQuoteEl.textContent = q.rightQuote;
+      answerMedia.classList.remove("hidden");
+
+      if (q.image){
+        answerImg.src = q.image;
+        answerImg.classList.remove("hidden");
+      } else {
+        answerImg.classList.add("hidden");
+      }
+
+      nextRow.classList.remove("hidden");
+    }
+
+    btnNext.addEventListener("click", () => {
+      idx++;
+      if (idx < questions.length){
+        renderQuestion();
+      } else {
+        // done
+        pageQuiz.classList.add("hidden");
+        pageGate.classList.remove("hidden");
+        miniConfetti();
+      }
     });
 
-  } else {
-    document.getElementById("error").innerText =
-      "Hmm... not quite right 😏 Try again!";
-  }
-}
-</script>
+    /***********************
+     * Main actions
+     ***********************/
+    $("btnOpen").addEventListener("click", async () => {
+      // Start background effects
+      startContinuousConfetti();
+      startFloatingStuff();
 
+      // Sounds + music (must be user gesture)
+      playOpenSfx();
+      await startMusic();
+
+      // Envelope open + paper slide animation
+      env1.classList.add("open");
+
+      // After paper animation, go to quiz
+      setTimeout(() => {
+        pageStart.classList.add("hidden");
+        pageQuiz.classList.remove("hidden");
+        idx = 0;
+        renderQuestion();
+      }, 900);
+    });
+
+    $("btnReveal").addEventListener("click", () => {
+      playOpenSfx();
+      env2.classList.add("open");
+      miniConfetti();
+
+      // Reveal page shortly after envelope opens
+      setTimeout(() => {
+        pageGate.classList.add("hidden");
+        pageReveal.classList.remove("hidden");
+
+        // extra celebration burst
+        confetti({ particleCount: 180, spread: 120, startVelocity: 38, origin: { y: 0.65 } });
+      }, 850);
+    });
+
+    // Start subtle background effects immediately (visual only).
+    // Confetti starts after open click (user gesture), per your requirement it should keep bursting.
+    startFloatingStuff();
+  </script>
 </body>
 </html>
