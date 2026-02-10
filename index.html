@@ -2,16 +2,20 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>A Special Surprise</title>
+<title>Birthday Surprise</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Confetti Library -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <style>
 body {
   font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #f9e6ff, #ffe6f2);
+  background: linear-gradient(135deg, #ffdde1, #ee9ca7);
   text-align: center;
   margin: 0;
   padding: 20px;
+  overflow-x: hidden;
 }
 
 .card {
@@ -19,9 +23,15 @@ body {
   padding: 30px;
   border-radius: 20px;
   box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-  max-width: 400px;
+  max-width: 420px;
   margin: 40px auto;
-  transition: 0.4s ease;
+  animation: fadeIn 1s ease-in-out;
+}
+
+h1 {
+  font-size: 28px;
+  color: #ff1493;
+  margin-top: 0;
 }
 
 button {
@@ -56,20 +66,24 @@ img {
   margin-top: 20px;
 }
 
-h2 {
-  margin-top: 0;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 </style>
 </head>
 
 <body>
 
+<!-- Envelope Screen -->
 <div id="envelope" class="card">
-  <h2>💌 You've Got Mail</h2>
-  <p>Click below to open your special envelope...</p>
+  <h1>🎉 Happy Birthday babyyy doll! 🎉</h1>
+  <p style="margin-top:20px;">💌 You've got mail...</p>
+  <p>Click below to open your special surprise 😌</p>
   <button onclick="openEnvelope()">Open Envelope</button>
 </div>
 
+<!-- Quiz -->
 <div id="quiz" class="card hidden">
   <h2>Answer These to Unlock Your Gift 😌</h2>
 
@@ -83,18 +97,31 @@ h2 {
   <p id="error" style="color:red;"></p>
 </div>
 
+<!-- Reveal -->
 <div id="reveal" class="card hidden">
-  <h2>🎉 You Unlocked It!</h2>
+  <h2>🎁 You Unlocked It!</h2>
   <p>Here’s your surprise 💛</p>
   <img id="giftImage" src="" alt="Surprise Gift">
 </div>
 
 <script>
+
+// 🎉 Confetti Burst on Page Load
+window.onload = function() {
+  confetti({
+    particleCount: 150,
+    spread: 90,
+    origin: { y: 0.6 }
+  });
+};
+
+// Open Envelope
 function openEnvelope() {
   document.getElementById("envelope").classList.add("hidden");
   document.getElementById("quiz").classList.remove("hidden");
 }
 
+// Check Answers
 function checkAnswers() {
   const answer1 = document.getElementById("q1").value.toLowerCase();
   const answer2 = document.getElementById("q2").value.toLowerCase();
@@ -103,9 +130,16 @@ function checkAnswers() {
     document.getElementById("quiz").classList.add("hidden");
     document.getElementById("reveal").classList.remove("hidden");
 
-    // Load random image each time
+    // Random image each time
     document.getElementById("giftImage").src =
       "https://picsum.photos/400/300?random=" + new Date().getTime();
+
+    // Confetti again on win
+    confetti({
+      particleCount: 200,
+      spread: 120,
+      origin: { y: 0.6 }
+    });
 
   } else {
     document.getElementById("error").innerText =
