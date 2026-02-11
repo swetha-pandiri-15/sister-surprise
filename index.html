@@ -65,12 +65,19 @@
     h1,h2,h3{ margin:0 0 10px 0; line-height:1.2; }
 
     .title{
-      font-size: clamp(20px, 6vw, 30px);
-      font-weight:800;
-      text-align:center;
-      color: var(--ink);
-      white-space: nowrap;
+  font-size: clamp(20px, 6vw, 30px);
+  font-weight:800;
+  text-align:center;
+  color: var(--ink);
+  line-height: 1.15;
+}
+
+    /* Only for the top H1 title: keep on one line if possible, but don't clip */
+    #pageStart .title{
+      white-space: normal;       /* allow wrap */
+      overflow-wrap: anywhere;   /* prevents clipping */
     }
+
     .title .gold{
       background: linear-gradient(180deg, var(--gold2), var(--gold));
       -webkit-background-clip: text;
@@ -461,7 +468,7 @@ Answer these to Unlock Your Gift 🎁</div>
 
       <div class="emotional">
         <div class="msg">
-          Just like this, you’re steady, strong, and quietly valuable — more than you even realize.
+          Just like this, you’re steady, strong, and quietly valuable - more than you even realize.
         </div>
         <div class="sig">
           Love you soo much Baby Doll!! Happppy Birthday!!!!! 💛😘
@@ -493,7 +500,7 @@ Answer these to Unlock Your Gift 🎁</div>
         image: "images/q2.jpg"
       },
       {
-        text: "3️⃣ Which subject were you so terrified of failing in BTech ?",
+        text: "3️⃣ Which subject were you so terrified of failing in BTech😆?",
         choices: ["Advanced Controlling Systems", "Microprocessors & Microcontrollers", "None – I was fearless"],
         correctIndex: 0,
         rightQuote: "Those fearful days, for the entire family 😨",
@@ -512,7 +519,7 @@ Answer these to Unlock Your Gift 🎁</div>
         text: "5️⃣ In which city did we celebrate your bachelorette party?",
         choices: ["Nashville", "Afghanistan", "Zimbabwe"],
         correctIndex: 0,
-        rightQuote: "Yo yoo!! 🥳",
+        rightQuote: "Yo Yoo!! 🥳",
         wrongQuote: "Well, looks like you had a different bachelorette party 😜",
         image: "images/q5.jpg"
       },
@@ -521,7 +528,7 @@ Answer these to Unlock Your Gift 🎁</div>
         choices: ["Your sister", "Google", "ChatGPT"],
         correctIndex: 0,
         rightQuote: "Well!! Of course. 😌",
-        wrongQuote: "Oh wow!! Good to know your real answer 😢 Oh wow!! Good to know your real answer, but think again!",
+        wrongQuote: "Oh wow!! Good to know your real answer 😢, but think again!",
         image: "images/q6.jpg"
       },
       {
@@ -752,3 +759,4 @@ Answer these to Unlock Your Gift 🎁</div>
   </script>
 </body>
 </html>
+
